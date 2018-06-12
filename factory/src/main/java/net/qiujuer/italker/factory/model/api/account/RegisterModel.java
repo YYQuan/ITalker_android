@@ -1,4 +1,4 @@
-package net.qiujuer.italker.factory.model.api;
+package net.qiujuer.italker.factory.model.api.account;
 
 /**
  * 注册使用的请求model

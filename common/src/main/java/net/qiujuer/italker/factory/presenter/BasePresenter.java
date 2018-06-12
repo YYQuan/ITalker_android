@@ -19,7 +19,7 @@ public class BasePresenter<T extends   BaseContract.View> implements BaseContrac
         mView.setPresenter(this);
     }
 
-    protected final T getmView(){
+    protected final T getView(){
         return mView;
     }
 

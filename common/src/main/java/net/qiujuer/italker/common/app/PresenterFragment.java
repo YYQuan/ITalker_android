@@ -36,7 +36,7 @@ public abstract class PresenterFragment<Presenter extends BaseContract.Presenter
 
     @Override
     public void setPresenter(Presenter presenter) {
-        this.mPresenter = mPresenter;
+        this.mPresenter = presenter;
     }
 
 
