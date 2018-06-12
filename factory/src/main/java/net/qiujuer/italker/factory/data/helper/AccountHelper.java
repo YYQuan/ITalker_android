@@ -2,6 +2,7 @@ package net.qiujuer.italker.factory.data.helper;
 
 import android.text.style.SuperscriptSpan;
 
+import net.qiujuer.italker.factory.Factory;
 import net.qiujuer.italker.factory.R;
 import net.qiujuer.italker.factory.data.DataSource;
 import net.qiujuer.italker.factory.model.api.RspModel;
@@ -10,7 +11,6 @@ import net.qiujuer.italker.factory.model.api.account.RegisterModel;
 import net.qiujuer.italker.factory.model.db.User;
 import net.qiujuer.italker.factory.net.NetWork;
 import net.qiujuer.italker.factory.net.RemoteService;
-
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -29,7 +29,7 @@ public class AccountHelper {
      * @param model
      * @param callback
      */
-    public static void register(RegisterModel model, final DataSource.Callback<User> callback){
+    public static void register(final RegisterModel model, final DataSource.Callback<User> callback){
         RemoteService service  = NetWork.getRetrofit().create(RemoteService.class);
 
         Call<RspModel<AccountRspModel>> call = service.accountRegister(model);
@@ -52,6 +52,7 @@ public class AccountHelper {
                         bindPushID(callback);
                     }
                 }else{
+                    Factory.decodeRspCode(rspModel,callback);
 
 
                 }
@@ -66,6 +67,6 @@ public class AccountHelper {
 
 
     public static void bindPushID(final DataSource.Callback<User>  callback){
-
+        callback.onDataNotAvailable(R.string.app_name);
     }
 }
