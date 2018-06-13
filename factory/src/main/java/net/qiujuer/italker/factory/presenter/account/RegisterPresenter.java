@@ -10,6 +10,7 @@ import net.qiujuer.italker.factory.data.DataSource;
 import net.qiujuer.italker.factory.data.helper.AccountHelper;
 import net.qiujuer.italker.factory.model.api.account.RegisterModel;
 import net.qiujuer.italker.factory.model.db.User;
+import net.qiujuer.italker.factory.persistence.Account;
 import net.qiujuer.italker.factory.presenter.BasePresenter;
 
 import java.util.regex.Pattern;
@@ -46,7 +47,7 @@ public class RegisterPresenter extends BasePresenter<RegisterContract.View> impl
                 view.showError(R.string.data_account_register_invalid_parameter_password);
             }else{
                 //网络请求
-                RegisterModel  model   = new RegisterModel(phone ,password,name);
+                RegisterModel  model   = new RegisterModel(phone ,password,name, Account.getPushId());
                 AccountHelper.register(model,this);
             }
 
