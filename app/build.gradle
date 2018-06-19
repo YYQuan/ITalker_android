@@ -17,6 +17,7 @@ android {
                 GETUI_APP_SECRET: "0yFhZpR3t362OQAt2DlI72",
                 PACKAGE_NAME    : applicationId
         ]
+        vectorDrawables.useSupportLibrary = true
     }
     buildTypes {
         release {
@@ -28,6 +29,8 @@ android {
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
+    compile 'com.android.support:design:25.4.0'
+    compile 'com.android.support:support-vector-drawable:25.4.0'
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })

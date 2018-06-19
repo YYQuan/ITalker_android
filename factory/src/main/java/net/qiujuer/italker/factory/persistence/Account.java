@@ -123,5 +123,7 @@ public class Account {
     }
 
 
-
+    public static String getUserId() {
+        return userId;
+    }
 }

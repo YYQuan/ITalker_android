@@ -20,10 +20,9 @@ import butterknife.Unbinder;
 public abstract class Fragment extends android.support.v4.app.Fragment {
     protected View mRoot;
     protected Unbinder mRootUnBinder;
-
-
-
     protected PlaceHolderView  mPlaceHolderView;
+
+    protected  boolean mIsFirstInitData = true;
 
     @Override
     public void onAttach(Context context) {
@@ -56,6 +55,10 @@ public abstract class Fragment extends android.support.v4.app.Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        if(mIsFirstInitData){
+            mIsFirstInitData=false;
+            onFirstInit();
+        }
         // 当View创建完成后初始化数据
         initData();
     }
@@ -86,6 +89,13 @@ public abstract class Fragment extends android.support.v4.app.Fragment {
      * 初始化数据
      */
     protected void initData() {
+
+    }
+
+    /**
+     * 首次初始化数据
+     */
+    protected void onFirstInit() {
 
     }
 
