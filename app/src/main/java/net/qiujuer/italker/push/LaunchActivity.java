@@ -75,6 +75,7 @@ public class LaunchActivity extends Activity {
             //已经登录的情况下，判断是否绑定
             if(Account.isBind()){
                 skip();
+                return;
             }
         }else{
             //没有登录
@@ -134,7 +135,8 @@ public class LaunchActivity extends Activity {
         valueAnimator.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
-              endCallback.run();
+                super.onAnimationEnd(animation);
+                endCallback.run();
             }
         });
 
