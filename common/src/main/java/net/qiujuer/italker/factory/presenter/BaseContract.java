@@ -1,7 +1,5 @@
 package net.qiujuer.italker.factory.presenter;
 
-import android.support.annotation.StringRes;
-
 import net.qiujuer.italker.common.widget.recycler.RecyclerAdapter;
 
 /**
@@ -28,7 +26,9 @@ public interface BaseContract {
         //公用的部分
         void start();
 
-        void destory();
+
+
+        void destroy();
     }
 
     // 基本的一个列表的View的职责

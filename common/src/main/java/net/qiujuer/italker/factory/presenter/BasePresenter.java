@@ -36,7 +36,7 @@ public class BasePresenter<T extends   BaseContract.View> implements BaseContrac
 
     @SuppressWarnings("unchecked")
     @Override
-    public void destory() {
+    public void destroy() {
         T view =  mView;
         mView = null;
         if(view !=null){
