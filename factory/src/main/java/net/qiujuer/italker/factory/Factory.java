@@ -1,6 +1,5 @@
 package net.qiujuer.italker.factory;
 
-import android.support.annotation.StringDef;
 import android.support.annotation.StringRes;
 
 import com.google.gson.Gson;
@@ -10,6 +9,12 @@ import com.raizlabs.android.dbflow.config.FlowManager;
 
 import net.qiujuer.italker.common.app.Application;
 import net.qiujuer.italker.factory.data.DataSource;
+import net.qiujuer.italker.factory.data.group.GroupCenter;
+import net.qiujuer.italker.factory.data.group.GroupDispatcher;
+import net.qiujuer.italker.factory.data.message.MessageCenter;
+import net.qiujuer.italker.factory.data.message.MessageDispatcher;
+import net.qiujuer.italker.factory.data.user.UserCenter;
+import net.qiujuer.italker.factory.data.user.UserDispatcher;
 import net.qiujuer.italker.factory.model.api.RspModel;
 import net.qiujuer.italker.factory.persistence.Account;
 import net.qiujuer.italker.factory.utils.DBFlowExclusionStrategy;
@@ -24,10 +29,11 @@ import java.util.concurrent.Executors;
 public class Factory {
     // 单例模式ø
     private static final Factory instance;
-    //全局的线程池
+    // 全局的线程池
     private final Executor executor;
-    //全局的Gson
+    // 全局的Gson
     private final Gson gson;
+
 
     static {
         instance = new Factory();
@@ -37,11 +43,24 @@ public class Factory {
         // 新建一个4个线程的线程池
         executor = Executors.newFixedThreadPool(4);
         gson = new GsonBuilder()
-                //设置时间格式
+                // 设置时间格式
                 .setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS")
-                // TODO 设置一个过滤器，数据库级别的Model不进行Json转换
+                // 设置一个过滤器，数据库级别的Model不进行Json转换
                 .setExclusionStrategies(new DBFlowExclusionStrategy())
                 .create();
+    }
+
+    /**
+     * Factory 中的初始化
+     */
+    public static void setup() {
+        // 初始化数据库
+        FlowManager.init(new FlowConfig.Builder(app())
+                .openDatabasesOnInit(true) // 数据库初始化的时候就开始打开
+                .build());
+
+        // 持久化的数据进行初始化
+        Account.load(app());
     }
 
     /**
@@ -73,15 +92,19 @@ public class Factory {
         return instance.gson;
     }
 
+
     /**
-     * 进行错误Code的解析
-     * @param model
-     * @param callback
+     * 进行错误Code的解析，
+     * 把网络返回的Code值进行统一的规划并返回为一个String资源
+     *
+     * @param model    RspModel
+     * @param callback DataSource.FailedCallback 用于返回一个错误的资源Id
      */
-    public static  void  decodeRspCode(RspModel model, DataSource.FailedCallback callback){
-        if(model==null)
+    public static void decodeRspCode(RspModel model, DataSource.FailedCallback callback) {
+        if (model == null)
             return;
 
+        // 进行Code区分
         switch (model.getCode()) {
             case RspModel.SUCCEED:
                 return;
@@ -135,11 +158,12 @@ public class Factory {
         }
     }
 
-    private static void decodeRspCode(@StringRes int resId, final DataSource.FailedCallback callback){
-        if(callback!=null){
+    private static void decodeRspCode(@StringRes final int resId,
+                                      final DataSource.FailedCallback callback) {
+        if (callback != null)
             callback.onDataNotAvailable(resId);
-        }
     }
+
 
     /**
      * 收到账户退出的消息需要进行账户退出重新登录
@@ -148,25 +172,44 @@ public class Factory {
 
     }
 
+
     /**
      * 处理推送来的消息
-     * @param msg
+     *
+     * @param message 消息
      */
-    public static void dispatchPush(String msg){
-        //TODO
+    public static void dispatchPush(String message) {
+        // TODO
     }
 
 
     /**
-     * Factory 的初始化
+     * 获取一个用户中心的实现类
+     *
+     * @return 用户中心的规范接口
      */
-    public static  void setup(){
-        //数据库初始化
-        FlowManager.init(new FlowConfig.Builder(app())
-                .openDatabasesOnInit(true)
-                .build());
-
-
-        Account.load(app());
+    public static UserCenter getUserCenter() {
+        return UserDispatcher.instance();
     }
+
+    /**
+     * 获取一个消息中心的实现类
+     *
+     * @return 消息中心的规范接口
+     */
+    public static MessageCenter getMessageCenter() {
+        return MessageDispatcher.instance();
+    }
+
+
+    /**
+     * 获取一个群处理中心的实现类
+     *
+     * @return 群中心的规范接口
+     */
+    public static GroupCenter getGroupCenter() {
+        return GroupDispatcher.instance();
+    }
+
+
 }

@@ -12,6 +12,7 @@ import net.qiujuer.italker.factory.model.db.User;
 import net.qiujuer.italker.factory.model.db.User_Table;
 import net.qiujuer.italker.factory.net.Network;
 import net.qiujuer.italker.factory.net.RemoteService;
+import net.qiujuer.italker.utils.CollectionUtil;
 
 import java.util.List;
 
@@ -40,7 +41,8 @@ public class UserHelper {
                     // 数据库的存储操作，需要把UserCard转换为User
                     // 保存用户信息
                     User user = userCard.build();
-                    user.save();
+                    // 异步统一的保存
+                    DbHelper.save(User.class, user);
                     // 返回成功
                     callback.onDataLoaded(userCard);
                 } else {
@@ -97,9 +99,8 @@ public class UserHelper {
                     UserCard userCard = rspModel.getResult();
                     // 保存到本地数据库
                     User user = userCard.build();
-                    user.save();
-                    // TODO 通知联系人列表刷新
-
+                    // 保存并通知联系人列表刷新
+                    DbHelper.save(User.class, user);
                     // 返回数据
                     callback.onDataLoaded(userCard);
                 } else {
@@ -115,7 +116,7 @@ public class UserHelper {
     }
 
     // 刷新联系人的操作
-    public static void refreshContacts(final DataSource.Callback<List<UserCard>> callback) {
+    public static void refreshContacts() {
         RemoteService service = Network.remote();
         service.userContacts()
                 .enqueue(new Callback<RspModel<List<UserCard>>>() {
@@ -123,16 +124,23 @@ public class UserHelper {
                     public void onResponse(Call<RspModel<List<UserCard>>> call, Response<RspModel<List<UserCard>>> response) {
                         RspModel<List<UserCard>> rspModel = response.body();
                         if (rspModel.success()) {
+
+                            List<UserCard>  cards = rspModel.getResult();
+                            if(cards==null||cards.size()==0){
+                                return;
+                            }
+
+                            Factory.getUserCenter().dispatch(CollectionUtil.toArray(cards,UserCard.class));
                             // 返回数据
-                            callback.onDataLoaded(rspModel.getResult());
+
                         } else {
-                            Factory.decodeRspCode(rspModel, callback);
+                            Factory.decodeRspCode(rspModel, null);
                         }
                     }
 
                     @Override
                     public void onFailure(Call<RspModel<List<UserCard>>> call, Throwable t) {
-                        callback.onDataNotAvailable(R.string.data_network_error);
+
                     }
                 });
     }
@@ -145,18 +153,16 @@ public class UserHelper {
                 .querySingle();
     }
 
+    // 从网络查询某用户的信息
     public static User findFromNet(String id) {
-
         RemoteService remoteService = Network.remote();
         try {
             Response<RspModel<UserCard>> response = remoteService.userFind(id).execute();
             UserCard card = response.body().getResult();
             if (card != null) {
-
-                // TODO 数据库的存储但是没有通知
                 User user = card.build();
-                user.save();
 
+                Factory.getUserCenter().dispatch(card);
                 return user;
             }
 

@@ -79,8 +79,9 @@ public class AccountHelper {
                 //获取我的信息
                 final User user = model.getUser();
                 //进行数据库写入  有多种存储方式
+                DbHelper.save(User.class,user);
                 //1.直接保存  轻量级的这样保存没问题
-                user.save();
+                //user.save();
 //                        //2
 //                        FlowManager.getModelAdapter(User.class).save(user);
 //                        //3
@@ -107,8 +108,6 @@ public class AccountHelper {
                 }
             } else {
                 Factory.decodeRspCode(rspModel, callback);
-
-
             }
         }
 

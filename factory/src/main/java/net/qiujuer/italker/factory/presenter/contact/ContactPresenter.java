@@ -3,24 +3,16 @@ package net.qiujuer.italker.factory.presenter.contact;
 import android.support.annotation.NonNull;
 import android.support.v7.util.DiffUtil;
 
-import com.raizlabs.android.dbflow.config.DatabaseDefinition;
-import com.raizlabs.android.dbflow.config.FlowManager;
 import com.raizlabs.android.dbflow.sql.language.SQLite;
-import com.raizlabs.android.dbflow.structure.database.DatabaseWrapper;
-import com.raizlabs.android.dbflow.structure.database.transaction.ITransaction;
 import com.raizlabs.android.dbflow.structure.database.transaction.QueryTransaction;
 
-import net.qiujuer.italker.factory.data.DataSource;
 import net.qiujuer.italker.factory.data.helper.UserHelper;
-import net.qiujuer.italker.factory.model.card.UserCard;
-import net.qiujuer.italker.factory.model.db.AppDatabase;
 import net.qiujuer.italker.factory.model.db.User;
 import net.qiujuer.italker.factory.model.db.User_Table;
 import net.qiujuer.italker.factory.persistence.Account;
 import net.qiujuer.italker.factory.presenter.BasePresenter;
 import net.qiujuer.italker.factory.utils.DiffUiDataCallback;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -59,8 +51,12 @@ public class ContactPresenter extends BasePresenter<ContactContract.View>
                     }
                 })
                 .execute();
+
+
+
         // 加载网络数据
-        UserHelper.refreshContacts(new DataSource.Callback<List<UserCard>>() {
+        UserHelper.refreshContacts();
+        /*UserHelper.refreshContacts(new DataSource.Callback<List<UserCard>>() {
             @Override
             public void onDataNotAvailable(int strRes) {
                 // 网络失败，因为本地有数据，不管错误
@@ -92,6 +88,7 @@ public class ContactPresenter extends BasePresenter<ContactContract.View>
 
             }
         });
+        */
     }
 
 
