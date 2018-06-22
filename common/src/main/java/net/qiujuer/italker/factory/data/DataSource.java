@@ -8,12 +8,12 @@ import android.support.annotation.StringRes;
 
 public interface DataSource {
 
-    interface  Callback<T> extends SuccessCallback<T>,FailedCallback<T>{
+    interface  Callback<T> extends SucceedCallback<T>,FailedCallback<T>{
 
     }
 
 
-    interface SuccessCallback<T> {
+    interface SucceedCallback<T> {
         //网络请求成功
         void onDataLoaded(T t);
     }

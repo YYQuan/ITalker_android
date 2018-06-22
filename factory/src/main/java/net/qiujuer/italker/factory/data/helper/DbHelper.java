@@ -258,7 +258,7 @@ public class DbHelper {
             identifies.add(identify);
         }
 
-        // 异步的数据库查询，并异步的发起二次通知
+        //异步的数据库查询，并异步的发起二次通知
         DatabaseDefinition definition = FlowManager.getDatabase(AppDatabase.class);
         definition.beginTransactionAsync(new ITransaction() {
             @Override
