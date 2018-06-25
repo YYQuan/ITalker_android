@@ -1,14 +1,10 @@
 package net.qiujuer.italker.factory.model.db;
 
-import android.annotation.TargetApi;
-
 import com.raizlabs.android.dbflow.annotation.Column;
 import com.raizlabs.android.dbflow.annotation.PrimaryKey;
 import com.raizlabs.android.dbflow.annotation.Table;
-import com.raizlabs.android.dbflow.structure.BaseModel;
 
 import net.qiujuer.italker.factory.model.Author;
-import net.qiujuer.italker.factory.utils.DiffUiDataCallback;
 
 import java.util.Date;
 import java.util.Objects;
@@ -17,7 +13,7 @@ import java.util.Objects;
  * Created by Yqquan on 2018/6/12.
  */
 @Table(database = AppDatabase.class)
-public class User  extends BaseModel  implements Author, DiffUiDataCallback.UiDataDiffer<User>{
+public class User  extends BaseDbModel<User>  implements Author{
     public static final int SEX_MAN = 1;
     public static final int SEX_WOMAN = 2;
 
@@ -141,11 +137,30 @@ public class User  extends BaseModel  implements Author, DiffUiDataCallback.UiDa
     }
 
 
-
     @Override
     public int hashCode() {
+        return id != null ? id.hashCode() : 0;
+    }
 
-        return Objects.hash(id, name, phone, portrait, desc, sex, alias, follows, following, isFollow, modifyAt);
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        User user = (User) o;
+
+        if (sex != user.sex) return false;
+        if (follows != user.follows) return false;
+        if (following != user.following) return false;
+        if (isFollow != user.isFollow) return false;
+        if (!id.equals(user.id)) return false;
+        if (name != null ? !name.equals(user.name) : user.name != null) return false;
+        if (phone != null ? !phone.equals(user.phone) : user.phone != null) return false;
+        if (portrait != null ? !portrait.equals(user.portrait) : user.portrait != null)
+            return false;
+        if (desc != null ? !desc.equals(user.desc) : user.desc != null) return false;
+        if (alias != null ? !alias.equals(user.alias) : user.alias != null) return false;
+        return modifyAt != null ? modifyAt.equals(user.modifyAt) : user.modifyAt == null;
     }
 
     @Override

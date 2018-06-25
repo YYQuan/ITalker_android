@@ -3,8 +3,8 @@ package net.qiujuer.italker.factory.data.group;
 import net.qiujuer.italker.factory.data.helper.DbHelper;
 import net.qiujuer.italker.factory.data.helper.GroupHelper;
 import net.qiujuer.italker.factory.data.helper.UserHelper;
-import net.qiujuer.italker.factory.model.card.GroupCard;
 import net.qiujuer.italker.factory.model.card.GroupMemberCard;
+import net.qiujuer.italker.factory.model.card.GroupCard;
 import net.qiujuer.italker.factory.model.db.Group;
 import net.qiujuer.italker.factory.model.db.GroupMember;
 import net.qiujuer.italker.factory.model.db.User;
@@ -58,9 +58,7 @@ public class GroupDispatcher implements GroupCenter {
         public void run() {
             List<GroupMember> members = new ArrayList<>();
             for (GroupMemberCard model : cards) {
-                // 成员对应的人的信息
                 User user = UserHelper.search(model.getUserId());
-                // 成员对应的群的信息
                 Group group = GroupHelper.find(model.getGroupId());
                 if (user != null && group != null) {
                     GroupMember member = model.build(group, user);
@@ -72,9 +70,6 @@ public class GroupDispatcher implements GroupCenter {
         }
     }
 
-    /**
-     * 把群Card处理为群DB类
-     */
     private class GroupHandler implements Runnable {
         private final GroupCard[] cards;
 
@@ -86,7 +81,6 @@ public class GroupDispatcher implements GroupCenter {
         public void run() {
             List<Group> groups = new ArrayList<>();
             for (GroupCard card : cards) {
-                // 搜索管理员
                 User owner = UserHelper.search(card.getOwnerId());
                 if (owner != null) {
                     Group group = card.build(owner);
@@ -94,7 +88,6 @@ public class GroupDispatcher implements GroupCenter {
                 }
             }
             if (groups.size() > 0)
-
                 DbHelper.save(Group.class, groups.toArray(new Group[0]));
         }
     }
