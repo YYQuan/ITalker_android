@@ -47,6 +47,11 @@ public abstract class PresenterFragment<Presenter extends BaseContract.Presenter
     }
 
 
-
-
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if(mPresenter!= null){
+            mPresenter.destroy();
+        }
+    }
 }

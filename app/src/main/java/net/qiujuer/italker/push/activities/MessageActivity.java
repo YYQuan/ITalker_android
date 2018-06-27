@@ -9,6 +9,8 @@ import net.qiujuer.italker.common.app.Activity;
 import net.qiujuer.italker.common.app.Fragment;
 import net.qiujuer.italker.factory.model.Author;
 import net.qiujuer.italker.factory.model.db.Group;
+import net.qiujuer.italker.factory.model.db.Message;
+import net.qiujuer.italker.factory.model.db.Session;
 import net.qiujuer.italker.push.R;
 import net.qiujuer.italker.push.frags.message.ChatGroupFragment;
 import net.qiujuer.italker.push.frags.message.ChatUserFragment;
@@ -21,6 +23,15 @@ public class MessageActivity extends Activity {
 
     private String mReceiverId;
     private boolean mIsGroup;
+
+    public static void show(Context context, Session session) {
+        if (session == null || context == null || TextUtils.isEmpty(session.getId()))
+            return;
+        Intent intent = new Intent(context, MessageActivity.class);
+        intent.putExtra(KEY_RECEIVER_ID, session.getId());
+        intent.putExtra(KEY_RECEIVER_IS_GROUP, session.getReceiverType()== Message.RECEIVER_TYPE_GROUP);
+        context.startActivity(intent);
+    }
 
     /**
      * 显示人的聊天界面
